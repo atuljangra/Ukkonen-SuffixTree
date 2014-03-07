@@ -9,16 +9,17 @@ class node {
 private:
     int id;
 public:
-    node() {
-        this -> id = 0;
-    }
-    node (int id) {
-        this -> id = id;
-    }
+    int suffixNode;
+    node () : 
+        id(0),
+        suffixNode(-1) {};
+    node (int nid, int suffixLink):
+        id(nid),
+        suffixNode(suffixLink) {};
+    int getID ();
     ~node() {
         cout << "destroying node " << id << endl;
 
     }
-    void printID ();
 };
 #endif

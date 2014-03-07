@@ -14,10 +14,11 @@ node.o : node.h node.cpp
 edge.o : edge.h edge.cpp 
 	    $(CC) $(CFLAGS) edge.cpp
 
-suffixTree: suffixTree.h suffixTree.cpp node.h edge.h
+suffixTree.o : suffixTree.h suffixTree.cpp node.h edge.h
 	    $(CC) $(CFLAGS) suffixTree.cpp
 clean:
 	rm -f $(OBJS)
 	rm -f $(EXEC)
-
+run:
+	./$(EXEC)
 

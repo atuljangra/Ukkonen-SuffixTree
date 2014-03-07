@@ -1,5 +1,5 @@
 #include "node.h"
 
-void node::printID () {
-    cout << "ID: " << id << endl;
+int node::getID () {
+    return id;
 }
