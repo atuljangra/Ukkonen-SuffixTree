@@ -1,3 +1,6 @@
+#ifndef SUFFIXTREE_H
+#define SUFFIXTREE_H 
+
 #include "node.h"
 #include "edge.h"
 #include <iostream>
@@ -19,4 +22,4 @@ class suffixTree {
             endIndex(end) {};
 };
 
-                                                                             
+#endif                                                                             

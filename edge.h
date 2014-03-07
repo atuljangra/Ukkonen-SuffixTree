@@ -3,10 +3,10 @@
 #define EDGE_H
 
 #include <iostream>
-
+#include "node.h"
 using namespace std;
 
-class edge {
+class Edge {
 private:
     // Edges are hash-searched on the basis of startNode.
     // startNode = -1 means that this edge is not valid yet.
@@ -21,17 +21,19 @@ public:
     // node is the starting node and c is the ASCII input char.
     // Static because I want to call it without using an instantiated object.
     static int returnHashKey(int node, int c);
-    static edge findEdge(int node, int c);
+    static Edge findEdge(int node, int c);
     
     // Constructors.
-    edge () : startNode(-1) {};
-    edge (int start, int end, int first, int last) :
+    Edge () : startNode(-1) {};
+    // everytime a new edge is created, a new node is also created and thus the
+    // endNode is declared as below.
+    Edge (int start, int first, int last) :
         startNode (start),
-        endNode (end),
+        endNode (Node::noOfNodes++),
         startLabelIndex (first),
         endLabelIndex (last) {};
     // Destructor
-    ~edge() {
+    ~Edge() {
         cout << "destroying edge " << startNode << " " << endNode << endl;
     }        
 

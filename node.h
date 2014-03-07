@@ -5,19 +5,19 @@
 
 using namespace std;
 
-class node {
-private:
-    int id;
+class Node {
 public:
+    int id;
+    static int noOfNodes;
     int suffixNode;
-    node () : 
+    
+    Node () : 
         id(0),
         suffixNode(-1) {};
-    node (int nid, int suffixLink):
-        id(nid),
-        suffixNode(suffixLink) {};
+    
     int getID ();
-    ~node() {
+    
+    ~Node() {
         cout << "destroying node " << id << endl;
 
     }

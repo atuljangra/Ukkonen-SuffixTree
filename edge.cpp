@@ -1,5 +1,10 @@
 #include "edge.h"
 using namespace std;
 
-void edge::printID () {
-}                           
+void Edge::printID () {
+}
+
+int Edge::returnHashKey(int nodeID, int c) {
+    return (nodeID + c);
+}
+

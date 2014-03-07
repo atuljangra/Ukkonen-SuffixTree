@@ -1,5 +1,6 @@
 #include "node.h"
 
-int node::getID () {
+
+int Node::getID () {
     return id;
 }
