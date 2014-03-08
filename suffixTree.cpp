@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unordered_map> // Required c++11 support.
 #include <string>
+#include <cassert>
 // Maximum input length
 #define MAXLENGTH 1024
 
@@ -68,7 +69,52 @@ Edge Edge::findEdge(int node, int asciiChar) {
     // Return an invalid edge if the entry is not found.
     return Edge();
 }
+ // rootNode should be equal to the closest node to the end of the tree so
+ // tht this can be used in the next iteration.
+void suffixTree::migrateToClosestParent() {
+    // If the current suffix tree is ending on a node, this condition is already
+    // met.
+    if (endReal()) {
+        cout << "Nothing needs to be done for migrating" << endl;
+    }
+    else {
+        Edge e = Edge::findEdge(rootNode, Input[startIndex]);
+        // Above will always return a valid edge as we call this method after
+        // adding above.
+        assert(e.startNode != -1);
+        int labelLength = e.endLabelIndex - e.startLabelIndex;
 
+        // Go down
+        while (labelLength <= (endIndex - startIndex)) {
+            startIndex += labelLength + 1;
+            rootNode = e.endNode;
+            if (startIndex <= endIndex) {
+                e = Edge::findEdge(e.endNode, Input[startIndex]);
+                assert(e.startNode != -1);
+                labelLength = e.endLabelIndex - e.startLabelIndex;
+            }
+        }
+        
+    }
+}
+
+/*
+ * Break an edge so as to add new string at a specific point.
+ */
+int breakEdge(suffixTree &s, Edge &e) {
+    // Remove the edge 
+    e.remove();
+
+    Edge *newEdge = new Edge(s.rootNode, e.startLabelIndex, 
+                             e.startLabelIndex + s.endIndex - s.startIndex);
+    newEdge -> insert();
+    // Add the suffix link for the new node.
+    nodeArray[newEdge -> endNode].suffixNode = s.rootNode;
+    e.startLabelIndex += s.endIndex - s.startIndex + 1;
+    e.startNode = newEdge -> endNode;
+    e.insert();
+    return -1;
+}
 /*
  * Main function which will carry out all the different phases of the Ukkonen's
  * algorithm. Through suffixTree we'll maintain the current position in the tree
@@ -77,8 +123,72 @@ Edge Edge::findEdge(int node, int asciiChar) {
  */
 void carryPhase(suffixTree &tree, int lastIndex) {
     cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
+    int parentNode;
+    // to keep track of the last encountered node.
+    // Used for creating the suffix link.
+    int previousParentNode = -1;
+    while (true) {
+        // First we try to match an edge for this, if there is one edge and all
+        // other subsequent suffixs would already be there.
+        Edge e;
+        parentNode = tree.rootNode;
+
+        if (tree.endReal() ) {
+            e = Edge::findEdge(tree.rootNode, Input[lastIndex]);
+            if (e.startNode != -1)
+                break;
+        }
+        // If previoustree ends in between an edge, then we need to find that
+        // edge and match after that. 
+        else {
+            e = Edge::findEdge(tree.rootNode, Input[tree.startIndex]);
+            int length = tree.endIndex - tree.startIndex;
+            if (Input[e.startLabelIndex + length + 1] == Input[lastIndex])
+                // We have a match
+                break;
+            //If match was not found this way, then we need to break this edge
+            // and add a node and insert the string.
+            parentNode = breakEdge(tree, e);
+        }
+
+        // We have not matchng edge at this point, so we need to create a new
+        // one, add it to the tree at parentNode position and then insert it
+        // into the hash table.
+        //
+        // We are creating a new node here, which means we also need to update
+        // the suffix link here. Suffix link from the last visited node to the
+        // newly created node.
+        Edge *newEdge = new Edge(parentNode, lastIndex, inputLength);
+        newEdge -> insert();
+        if (previousParentNode > 0)
+            nodeArray[previousParentNode].suffixNode = parentNode;
+        previousParentNode = parentNode;
+
+        // Move to next suffix, i.e. next extension.
+        if (tree.rootNode == 0)
+            tree.startIndex++;
+        else
+            tree.rootNode = nodeArray[tree.rootNode].suffixNode;
+        tree.migrateToClosestParent();
+    }
+
+    if (previousParentNode > 0)
+        nodeArray[previousParentNode].suffixNode = parentNode;
+    tree.endIndex++;
+    tree.migrateToClosestParent();
 }
 
+void printAllEdges() {
+    cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
+    // For auto : C++11 FTW :)
+    for (auto it = edgeHash.begin(); it != edgeHash.end(); ++it) {
+        cout << it -> second.startNode << "\t\t" << it -> second.endNode 
+            << "\t\t" << nodeArray[it -> second.endNode].suffixNode
+            << "\t\t" << it -> second.startLabelIndex 
+            << "\t\t" << it -> second.endLabelIndex
+            << "\t\t" << endl;
+    }
+}
 int main () {
   cout << "Enter String" << endl;
   getline(cin, Input);
@@ -94,6 +204,8 @@ int main () {
   // Carry out different phases.
   for (int i = 0; i < inputLength; i++)
       carryPhase(tree, i);
+
+  printAllEdges();
   cout << "Wait for some more time to see the tree." << endl;
   cout << "Seeds are being imported right now." << endl;
   cout << "Adios!" << endl;

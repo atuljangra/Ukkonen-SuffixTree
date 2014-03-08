@@ -18,7 +18,7 @@ public:
     int getID ();
     
     ~Node() {
-        cout << "destroying node " << id << endl;
+       //  cout << "destroying node " << id << endl;
 
     }
 };

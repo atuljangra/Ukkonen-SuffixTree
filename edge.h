@@ -7,14 +7,13 @@
 using namespace std;
 
 class Edge {
-private:
+public:
     // Edges are hash-searched on the basis of startNode.
     // startNode = -1 means that this edge is not valid yet.
     int startNode;
     int endNode;
     int startLabelIndex;
     int endLabelIndex;
-public:
     void printID ();
     void insert ();
     void remove ();
@@ -34,7 +33,7 @@ public:
         endLabelIndex (last) {};
     // Destructor
     ~Edge() {
-        cout << "destroying edge " << startNode << " " << endNode << endl;
+      //  cout << "destroying edge " << startNode << " " << endNode << endl;
     }        
 
 };        

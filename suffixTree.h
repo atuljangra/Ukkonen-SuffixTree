@@ -7,6 +7,7 @@
 
 class suffixTree {
     public:
+        // TODO rootNode is not a good name, change this.
         int rootNode;   // Origin of the suffix tree
         int startIndex; // Starting index of the string represented.
         int endIndex;   // End index of the string represented.
@@ -19,7 +20,14 @@ class suffixTree {
         suffixTree(int root, int start, int end) :
             rootNode(root),
             startIndex(start),
-            endIndex(end) {};
+        endIndex(end) {};
+        // Real means that the suffix string ends at a node and thus the
+        // remaining string on that edge would be an empty string.
+        bool endReal() {return startIndex > endIndex;} 
+        // Img means that the suffixTree of current string ends on an imaginary
+        // node, which means in between an edge. 
+        bool endImg() {return endIndex >= startIndex;} 
+        void migrateToClosestParent();
 };
 
 #endif                                                                             
