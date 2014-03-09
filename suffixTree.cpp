@@ -3,8 +3,6 @@
 #include <unordered_map> // Required c++11 support.
 #include <string>
 #include <cassert>
-// Maximum input length
-#define MAXLENGTH 1024
 
 using namespace std;
 
@@ -186,7 +184,16 @@ void printAllEdges() {
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << it -> second.startLabelIndex 
             << "\t\t" << it -> second.endLabelIndex
-            << "\t\t" << endl;
+            << "\t\t";
+
+        int head;
+        if (inputLength > it -> second.endLabelIndex)
+            head = it -> second.endLabelIndex;
+        else 
+            head = inputLength;
+        for (int i = it -> second.startLabelIndex; i < head + 1; i++)
+            cout << Input[i];
+        cout << endl;
     }
 }
 int main () {
