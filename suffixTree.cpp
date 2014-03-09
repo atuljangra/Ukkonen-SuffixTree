@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// TODO Add proper debug messages using macros.
+
 // Buffer for input string.
 string Input;
 int inputLength;
@@ -187,34 +189,41 @@ bool search(string pattern) {
     int i = 0;
     if (e.startNode != -1) {
         while(i < len) {
-            cout << "Edge: " << e.startNode << " " << e.endNode << " : " 
+            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : " 
                 << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
         // Match the pattern on this edge.
         iter = 0;
         while ((Input[e.startLabelIndex + iter] == pattern[i + iter]) && 
                (e.endLabelIndex >= e.startLabelIndex + iter))   
                 {
-            cout << "matching " << Input[e.startLabelIndex + iter] << " " << pattern[iter]  << 
+            cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " << pattern[iter]  << 
                 " at index: " << e.startLabelIndex + iter << endl;
             iter++;
             if (i + iter >= len) {
-                cout << "We have a match ending at " << e.startLabelIndex + iter  - 1 << endl;
-                break;
+                cout << "Search\tWe have a match ending at " << e.startLabelIndex + iter  - 1 << endl;
+                return true;
             }
         }
         // Now we need to find another edge to match.
         e = Edge::findEdge(e.endNode, pattern[iter]);
         if (e.startNode == -1) {
-            cout << "No more matches " << iter << endl;
-            break;    
+            cout << "Search\tMatch not found, matched only upto " << iter << endl;
+            return false;    
         }
             i+=iter;
         }
 
     }
-    cout << "Match " << iter << " " << pattern << endl;
+    cout << "Search\tMatched :D " << iter << " " << pattern << endl;
     return true;
 }
+
+// TODO  Having pbm while printing suffix tree for atulatulatulatukatul@#
+// Used gdb, pbm is while printing the string. Somehow the indices are not
+// correctly set.
+/*
+ * This function prints all the edges in the suffix tree.
+ */
 void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
