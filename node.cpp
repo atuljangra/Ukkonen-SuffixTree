@@ -1,6 +1,3 @@
 #include "node.h"
 
-
-int Node::getID () {
-    return id;
-}
+// TODO Remove this file.

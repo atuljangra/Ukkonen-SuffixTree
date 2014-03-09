@@ -214,17 +214,15 @@ bool search(string pattern) {
         }
 
     }
-    cout << "Search\tMatched :D " << iter << " " << pattern << endl;
+    cout << "Search:\tMatched :D " << iter << " " << pattern << endl;
     return true;
 }
 
-// TODO  Having pbm while printing suffix tree for atulatulatulatukatul@#
-// Used gdb, pbm is while printing the string. Somehow the indices are not
-// correctly set.
 /*
  * This function prints all the edges in the suffix tree.
  */
 void printAllEdges() {
+    int count = 0;
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
     for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
@@ -233,7 +231,7 @@ void printAllEdges() {
             << "\t\t" << it -> second.startLabelIndex 
             << "\t\t" << it -> second.endLabelIndex
             << "\t\t";
-
+        count++;
         int head;
         if (inputLength > it -> second.endLabelIndex)
             head = it -> second.endLabelIndex;
@@ -243,6 +241,7 @@ void printAllEdges() {
             cout << Input[i];
         cout << endl;
     }
+    cout << "Total edges: " << count << endl;
 }
 int main () {
   cout << "Enter String" << endl;
@@ -251,8 +250,7 @@ int main () {
   inputLength = Input.length() - 1;
 
   // Allocating memory to the array of nodes.
-  nodeArray = (Node *)malloc(inputLength*(sizeof (Node)));
-  
+  nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
   cout << "you entered " << Input  << " length " << inputLength << endl;
   
   // Creating initial suffixTree.
