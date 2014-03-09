@@ -41,7 +41,8 @@ void Edge::insert() {
     int key = returnHashKey(startNode, Input[startLabelIndex]);
    // edgeHash.insert(make_pair<int, Node>(key, this));
     edgeHash[key] = *this;
-    cout << "inserted " << key <<" " << startNode << " " << Input[startLabelIndex] << endl; 
+    cout << "Inserted " << startNode << " " << endNode << " " << startLabelIndex  
+        << " " << endLabelIndex <<  " " << key <<  endl; 
 }
 /*
  * Remove an edge from the hash table.
@@ -111,7 +112,7 @@ int breakEdge(suffixTree &s, Edge &e) {
     e.startLabelIndex += s.endIndex - s.startIndex + 1;
     e.startNode = newEdge -> endNode;
     e.insert();
-    return -1;
+    return newEdge->endNode;
 }
 /*
  * Main function which will carry out all the different phases of the Ukkonen's
@@ -140,12 +141,13 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         // edge and match after that. 
         else {
             e = Edge::findEdge(tree.rootNode, Input[tree.startIndex]);
-            int length = tree.endIndex - tree.startIndex;
-            if (Input[e.startLabelIndex + length + 1] == Input[lastIndex])
+            int diff = tree.endIndex - tree.startIndex;
+            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex])
                 // We have a match
                 break;
             //If match was not found this way, then we need to break this edge
             // and add a node and insert the string.
+            cout << " breaking edge " << endl; 
             parentNode = breakEdge(tree, e);
         }
 
@@ -156,6 +158,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         // We are creating a new node here, which means we also need to update
         // the suffix link here. Suffix link from the last visited node to the
         // newly created node.
+        cout << "adding new edge" << endl;
         Edge *newEdge = new Edge(parentNode, lastIndex, inputLength);
         newEdge -> insert();
         if (previousParentNode > 0)
@@ -215,7 +218,7 @@ bool search(string pattern) {
 void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
-    for (auto it = edgeHash.begin(); it != edgeHash.end(); ++it) {
+    for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
         cout << it -> second.startNode << "\t\t" << it -> second.endNode 
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << it -> second.startLabelIndex 
