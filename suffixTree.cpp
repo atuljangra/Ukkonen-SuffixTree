@@ -176,6 +176,42 @@ void carryPhase(suffixTree &tree, int lastIndex) {
     tree.migrateToClosestParent();
 }
 
+bool search(string pattern) {
+    int len = pattern.length();
+    // Starting from 0 we start searching the pattern.
+    Edge e = Edge::findEdge(0, pattern[0]);
+    int iter = 0;
+    int i = 0;
+    if (e.startNode != -1) {
+        while(i < len) {
+            cout << "Edge: " << e.startNode << " " << e.endNode << " : " 
+                << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
+        // Match the pattern on this edge.
+        iter = 0;
+        while ((Input[e.startLabelIndex + iter] == pattern[i + iter]) && 
+               (e.endLabelIndex >= e.startLabelIndex + iter))   
+                {
+            cout << "matching " << Input[e.startLabelIndex + iter] << " " << pattern[iter]  << 
+                " at index: " << e.startLabelIndex + iter << endl;
+            iter++;
+            if (i + iter >= len) {
+                cout << "We have a match ending at " << e.startLabelIndex + iter  - 1 << endl;
+                break;
+            }
+        }
+        // Now we need to find another edge to match.
+        e = Edge::findEdge(e.endNode, pattern[iter]);
+        if (e.startNode == -1) {
+            cout << "No more matches " << iter << endl;
+            break;    
+        }
+            i+=iter;
+        }
+
+    }
+    cout << "Match " << iter << " " << pattern << endl;
+    return true;
+}
 void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
@@ -199,7 +235,8 @@ void printAllEdges() {
 int main () {
   cout << "Enter String" << endl;
   getline(cin, Input);
-  inputLength = Input.length();
+  // For aligning indices
+  inputLength = Input.length() - 1;
 
   // Allocating memory to the array of nodes.
   nodeArray = (Node *)malloc(inputLength*(sizeof (Node)));
@@ -209,10 +246,15 @@ int main () {
   // Creating initial suffixTree.
   suffixTree tree (0, 0, -1);
   // Carry out different phases.
-  for (int i = 0; i < inputLength; i++)
+  for (int i = 0; i <= inputLength; i++)
       carryPhase(tree, i);
 
   printAllEdges();
+
+  string pattern;
+  cout << "Enter pattern" << endl;
+  getline(cin, pattern);
+  search(pattern);
   cout << "Wait for some more time to see the tree." << endl;
   cout << "Seeds are being imported right now." << endl;
   cout << "Adios!" << endl;
