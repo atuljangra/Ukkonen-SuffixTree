@@ -261,10 +261,14 @@ int main () {
 
   printAllEdges();
 
+  cout << "Enter patterns and enter \"exit\" to exit." << endl;
   string pattern;
-  cout << "Enter pattern" << endl;
   getline(cin, pattern);
-  search(pattern);
+  while (pattern.compare("exit")) {
+    search(pattern);
+    cout << "Enter patterns and enter \"exit\" to exit." << endl;
+    getline(cin, pattern);
+  }
   cout << "Wait for some more time to see the tree." << endl;
   cout << "Seeds are being imported right now." << endl;
   cout << "Adios!" << endl;
