@@ -3,7 +3,8 @@
 #include <unordered_map> // Required c++11 support.
 #include <string>
 #include <cassert>
-
+#include <ctime>
+#include <chrono>
 using namespace std;
 
 // TODO Add proper debug messages using macros.
@@ -191,14 +192,14 @@ bool search(string pattern) {
         while(i < len) {
             cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : " 
                 << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
-        // Match the pattern on this edge.
-        iter = 0;
-        while ((Input[e.startLabelIndex + iter] == pattern[i + iter]) && 
-               (e.endLabelIndex >= e.startLabelIndex + iter))   
-                {
-            cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " << pattern[i + iter]  << 
-                " at index: " << e.startLabelIndex + iter << endl;
-            iter++;
+            // Match the pattern on this edge.
+            iter = 0;
+            while ((Input[e.startLabelIndex + iter] == pattern[i + iter]) && 
+                   (e.endLabelIndex >= e.startLabelIndex + iter))   
+                    {
+                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " << pattern[i + iter]
+                            << " at index: " << e.startLabelIndex + iter << endl;
+                        iter++;
             if (i + iter >= len) {
                 cout << "Search\tWe have a match ending at " << e.startLabelIndex + iter  - 1 << endl;
                 return true;
@@ -243,6 +244,8 @@ void printAllEdges() {
     }
     cout << "Total edges: " << count << endl;
 }
+
+
 int main () {
   cout << "Enter String" << endl;
   getline(cin, Input);
@@ -252,20 +255,27 @@ int main () {
   // Allocating memory to the array of nodes.
   nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
   cout << "you entered " << Input  << " length " << inputLength << endl;
-  
+
+  // Start timer.
   // Creating initial suffixTree.
+  auto start = std::chrono::high_resolution_clock::now();
   suffixTree tree (0, 0, -1);
   // Carry out different phases.
   for (int i = 0; i <= inputLength; i++)
       carryPhase(tree, i);
 
+  auto end = std::chrono::high_resolution_clock::now();
   printAllEdges();
+  cout << "Total time taken to build suffix tree: " 
+       << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
+       << "ms"<< endl;
 
   cout << "Enter patterns and enter \"exit\" to exit." << endl;
   string pattern;
   getline(cin, pattern);
   while (pattern.compare("exit")) {
     search(pattern);
+    cout << "----------------------------------------------------" << endl;
     cout << "Enter patterns and enter \"exit\" to exit." << endl;
     getline(cin, pattern);
   }
