@@ -186,8 +186,9 @@ bool search(string pattern) {
     int len = pattern.length();
     // Starting from 0 we start searching the pattern.
     Edge e = Edge::findEdge(0, pattern[0]);
+    // index until where we have matched on edge.
     int iter = 0;
-    int i = 0;
+    int i = -1;
     if (e.startNode != -1) {
         while(i < len) {
             cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : " 
@@ -197,14 +198,15 @@ bool search(string pattern) {
             // Match this edge as much as possible.
             while (e.endLabelIndex >= e.startLabelIndex + iter)   
                     {
-                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " << pattern[i + iter]
+                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " 
+                             << pattern[i + iter + 1]
                             << " at index: " << e.startLabelIndex + iter << endl;
                         // If character matches we increase the iterator
                         // otherwise we are done. No match.
-                        if (Input[e.startLabelIndex + iter] == pattern[i + iter]) { 
+                        if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) { 
                             iter++;
                             // If we have a match in the middle then we are done.
-                            if (i + iter >= len) {
+                            if (i + iter  + 1 >= len) {
                                 cout << "Search:\tWe have a match ending at " 
                                      << e.startLabelIndex + iter  - 1 << endl;
                                 return true;
@@ -217,15 +219,16 @@ bool search(string pattern) {
                    }
             // We have done all possible matches on this edge. We can proceed
             // only if the entire label matches.
-            
+            assert(iter = (e.endLabelIndex - e.startLabelIndex + 1));
 
             // Now we need to find another edge to match.
-            e = Edge::findEdge(e.endNode, pattern[i + iter]);
+            e = Edge::findEdge(e.endNode, pattern[i + iter + 1]);
             if (e.startNode == -1) {
-                cout << "Search:\tMatch not found, matched only upto " << iter << endl;
+                cout << "Search:\tMatch not found, matched only upto " << i + iter  
+                     << " " << pattern[i + iter + 1]<< endl;
                 return false;    
                 }
-            i+=iter;
+            i+=(iter);
         }
     }
     cout << "Search:\tMatched :D " << iter << " " << pattern << endl;
