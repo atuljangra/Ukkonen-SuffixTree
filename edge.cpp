@@ -5,11 +5,11 @@ void Edge::printID () {
 }
 
 /*
- * We need to differentiate the role of c and nodeID,
- * thus multiplying a prime number.
+ * Using Contor pairing function which is basically a bijective mapping from N*N
+ * -> N.
  */
 long Edge::returnHashKey(int nodeID, int c) {
-    return (long)(nodeID + 
-            (((long)c) << 59));
+    long contor = (1/2)*(nodeID + c)*(nodeID + c + 1) + c;
+    return contor;
 }
 
