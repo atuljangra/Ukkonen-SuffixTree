@@ -35,39 +35,39 @@ struct Key {
  * On the other hand, unorderedmap has a average case constant time complexity.
  * Key would be an integer which would be a function of nodeID and asciiChar
  */
-unordered_map <int, Edge> edgeHash;
+unordered_map <long, Edge> edgeHash;
 
 /*
  * Insert an edge into the hash table
  */
 void Edge::insert() {
-    int key = returnHashKey(startNode, Input[startLabelIndex]);
+    long key = returnHashKey(startNode, Input[startLabelIndex]);
    // edgeHash.insert(make_pair<int, Node>(key, this));
     edgeHash[key] = *this;
-    cout << "Inserted " << startNode << " " << endNode << " " << startLabelIndex  
-        << " " << endLabelIndex <<  " " << key <<  endl; 
+  //  cout << "Inserted " << startNode << " " << endNode << " " << startLabelIndex  
+ //       << " " << endLabelIndex <<  " " << key <<  endl; 
 }
 /*
  * Remove an edge from the hash table.
  */
 void Edge::remove() {
-     int key = returnHashKey(startNode, Input[startLabelIndex]);
+     long key = returnHashKey(startNode, Input[startLabelIndex]);
      edgeHash.erase(key);
-     cout << "Removed " << key << " " << startNode << " " << Input[startLabelIndex] << endl;
+   //  cout << "Removed " << key << " " << startNode << " " << Input[startLabelIndex] << endl;
 }
 
 /*
  * Find an edge in the hash table corresponding to NODE & ASCIICHAR
  */
 Edge Edge::findEdge(int node, int asciiChar) {
-    int key = returnHashKey(node, asciiChar);
-    unordered_map<int, Edge>::const_iterator search = edgeHash.find(key);
+    long key = returnHashKey(node, asciiChar);
+    unordered_map<long, Edge>::const_iterator search = edgeHash.find(key);
     if (search != edgeHash.end()) {
-        cout << "Entry found for " << node << " " << asciiChar << endl;
+    //    cout << "Entry found for " << node << " " << asciiChar << endl;
         return edgeHash.at(key);
     }
     
-    cout << "Entry NOT found for " << node << " " << asciiChar << endl;
+  //  cout << "Entry NOT found for " << node << " " << asciiChar << endl;
     // Return an invalid edge if the entry is not found.
     return Edge();
 }
@@ -77,12 +77,15 @@ void suffixTree::migrateToClosestParent() {
     // If the current suffix tree is ending on a node, this condition is already
     // met.
     if (endReal()) {
-        cout << "Nothing needs to be done for migrating" << endl;
+   //     cout << "Nothing needs to be done for migrating" << endl;
     }
     else {
         Edge e = Edge::findEdge(rootNode, Input[startIndex]);
         // Above will always return a valid edge as we call this method after
         // adding above.
+        if(e.startNode == -1) {
+            cout <<  rootNode << " " << startIndex << " " << Input[startIndex] << endl;
+        }
         assert(e.startNode != -1);
         int labelLength = e.endLabelIndex - e.startLabelIndex;
 
@@ -92,7 +95,10 @@ void suffixTree::migrateToClosestParent() {
             rootNode = e.endNode;
             if (startIndex <= endIndex) {
                 e = Edge::findEdge(e.endNode, Input[startIndex]);
-                assert(e.startNode != -1);
+          if(e.startNode == -1) {
+            cout <<  rootNode << " " << startIndex << " " << Input[startIndex] << endl;
+        }
+               assert(e.startNode != -1);
                 labelLength = e.endLabelIndex - e.startLabelIndex;
             }
         }
@@ -124,7 +130,7 @@ int breakEdge(suffixTree &s, Edge &e) {
  * iteration.
  */
 void carryPhase(suffixTree &tree, int lastIndex) {
-    cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
+   // cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
     int parentNode;
     // to keep track of the last encountered node.
     // Used for creating the suffix link.
@@ -150,7 +156,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
                 break;
             //If match was not found this way, then we need to break this edge
             // and add a node and insert the string.
-            cout << " breaking edge " << endl; 
+      //      cout << " breaking edge " << endl; 
             parentNode = breakEdge(tree, e);
         }
 
@@ -161,7 +167,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         // We are creating a new node here, which means we also need to update
         // the suffix link here. Suffix link from the last visited node to the
         // newly created node.
-        cout << "adding new edge" << endl;
+      //  cout << "adding new edge" << endl;
         Edge *newEdge = new Edge(parentNode, lastIndex, inputLength);
         newEdge -> insert();
         if (previousParentNode > 0)
@@ -171,8 +177,10 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         // Move to next suffix, i.e. next extension.
         if (tree.rootNode == 0)
             tree.startIndex++;
-        else
+        else {
             tree.rootNode = nodeArray[tree.rootNode].suffixNode;
+      //      printf("using suffix link while adding %d %d\n",tree.rootNode, nodeArray[tree.rootNode].suffixNode);
+        }
         tree.migrateToClosestParent();
     }
 
@@ -243,13 +251,13 @@ void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
     for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
-        cout << it -> second.startNode << "\t\t" << it -> second.endNode 
+ /*       cout << it -> second.startNode << "\t\t" << it -> second.endNode 
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << it -> second.startLabelIndex 
             << "\t\t" << it -> second.endLabelIndex
             << "\t\t";
-        count++;
-        int head;
+ */       count++;
+   /*     int head;
         if (inputLength > it -> second.endLabelIndex)
             head = it -> second.endLabelIndex;
         else 
@@ -257,7 +265,7 @@ void printAllEdges() {
         for (int i = it -> second.startLabelIndex; i < head + 1; i++)
             cout << Input[i];
         cout << endl;
-    }
+    */}
     cout << "Total edges: " << count << endl;
 }
 
@@ -270,7 +278,7 @@ int main () {
 
   // Allocating memory to the array of nodes.
   nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-  cout << "you entered " << Input  << " length " << inputLength << endl;
+//  cout << "you entered " << Input  << " length " << inputLength << endl;
 
   // Start timer.
   // Creating initial suffixTree.
@@ -282,20 +290,20 @@ int main () {
 
   auto end = std::chrono::high_resolution_clock::now();
   printAllEdges();
-  cout << "Total time taken to build suffix tree: " 
+  cout << "Total time taken to build suffix tree of length " << inputLength <<" : " 
        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
        << "ms"<< endl;
 
-  cout << "Enter patterns and enter \"exit\" to exit." << endl;
-  string pattern;
+  cout << "Enter patterns or enter \"exit\" to exit." << endl;
+/*  string pattern;
   getline(cin, pattern);
   while (pattern.compare("exit")) {
     search(pattern);
     cout << "----------------------------------------------------" << endl;
-    cout << "Enter patterns and enter \"exit\" to exit." << endl;
+    cout << "Enter pattern or enter \"exit\" to exit." << endl;
     getline(cin, pattern);
   }
-  cout << "Wait for some more time to see the tree." << endl;
+*/  cout << "Wait for some more time to see the tree." << endl;
   cout << "Seeds are being imported right now." << endl;
   cout << "Adios!" << endl;
   return 0;

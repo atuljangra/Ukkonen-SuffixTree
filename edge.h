@@ -19,7 +19,7 @@ public:
     void remove ();
     // node is the starting node and c is the ASCII input char.
     // Static because I want to call it without using an instantiated object.
-    static int returnHashKey(int node, int c);
+    static long returnHashKey(int node, int c);
     static Edge findEdge(int node, int c);
     
     // Constructors.

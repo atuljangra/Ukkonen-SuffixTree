@@ -6,11 +6,13 @@ using namespace std;
 int main () {
     ofstream file; 
     file.open("input");
-
-    for (int i = 0; i < 100; i++) {
+    srand (time(NULL));
+    for (int i = 0; i < 10000000; i++) {
         int num = rand() % 26;
         file << (char) (97+num);
-  //      cout << (char)(num + 97) << endl;
+        // cout << (char)(num + 97) ;
     }
+    file<<"$";
+    file.close();
     return 0;
 }
