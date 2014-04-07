@@ -251,13 +251,13 @@ void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
     for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
- /*       cout << it -> second.startNode << "\t\t" << it -> second.endNode 
+        cout << it -> second.startNode << "\t\t" << it -> second.endNode 
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << it -> second.startLabelIndex 
             << "\t\t" << it -> second.endLabelIndex
             << "\t\t";
- */       count++;
-   /*     int head;
+        count++;
+        int head;
         if (inputLength > it -> second.endLabelIndex)
             head = it -> second.endLabelIndex;
         else 
@@ -265,7 +265,7 @@ void printAllEdges() {
         for (int i = it -> second.startLabelIndex; i < head + 1; i++)
             cout << Input[i];
         cout << endl;
-    */}
+    }
     cout << "Total edges: " << count << endl;
 }
 
@@ -295,7 +295,7 @@ int main () {
        << "ms"<< endl;
 
   cout << "Enter patterns or enter \"exit\" to exit." << endl;
-/*  string pattern;
+  string pattern;
   getline(cin, pattern);
   while (pattern.compare("exit")) {
     search(pattern);
@@ -303,7 +303,7 @@ int main () {
     cout << "Enter pattern or enter \"exit\" to exit." << endl;
     getline(cin, pattern);
   }
-*/  cout << "Wait for some more time to see the tree." << endl;
+  cout << "Wait for some more time to see the tree." << endl;
   cout << "Seeds are being imported right now." << endl;
   cout << "Adios!" << endl;
   return 0;
